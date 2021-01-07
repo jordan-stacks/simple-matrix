@@ -251,9 +251,6 @@ namespace simple_matrix {
 				case '\f':
 				case '\r':
 					break;
-				default:
-					// Unexpected value
-					throw std::invalid_argument{"Unexpected character encountered: '" + *i + '"'};
 				}
 				break;
 			case CAPTURE:
@@ -270,9 +267,6 @@ namespace simple_matrix {
 					inp.clear();
 					cn++;
 					m++;
-					if (!(n == 0 || cn == n)) {
-						throw std::invalid_argument{"Column lengths must be consistent"};
-					}
 					n = cn;
 					cn = 0;
 					STATE = VOID;
@@ -284,9 +278,6 @@ namespace simple_matrix {
 					inp.clear();
 					cn++;
 					m++;
-					if (!(n == 0 || cn == n)) {
-						throw std::invalid_argument{"Column lengths must be consistent"};
-					}
 					n = cn;
 					cn = 0;
 					break;
@@ -297,9 +288,6 @@ namespace simple_matrix {
 			}
 			if (!(i == end || cancel))
 				++i;
-		}
-		if (STATE == CAPTURE) {
-			throw std::invalid_argument{"Premature end"};
 		}
 		matrix M{m, n};
 		for (uint i = 0; i < m; i++)

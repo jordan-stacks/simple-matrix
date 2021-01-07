@@ -8,6 +8,7 @@ CFLAGS=-I$(SRC) \
 		-O0 \
 		-fprofile-arcs \
 		-ftest-coverage \
+		-fno-exceptions \
 		-ggdb3 \
 		-std=c++11 \
 		-Werror \

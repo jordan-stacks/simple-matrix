@@ -22,8 +22,6 @@ matrix::matrix(uint rows, uint cols)
 
 matrix::matrix(uint rows, uint cols, std::initializer_list<double> list)
 		: m_{rows}, n_{cols}, buf_{(m_==0||n_==0) ? nullptr : new double[m_*n_]} {
-	if (list.size() != (m_*n_))
-		throw std::invalid_argument{"List must be of same size as matrix"};
 	std::copy(list.begin(), list.end(), buf_);
 }
 
@@ -34,8 +32,6 @@ matrix::matrix(uint rows, uint cols, const double *values)
 
 matrix::matrix(uint rows, uint cols, std::initializer_list<int> list)
 		: m_{rows}, n_{cols}, buf_{(m_==0||n_==0) ? nullptr : (new double[m_*n_])} {
-	if (list.size() != (m_*n_))
-		throw std::invalid_argument{"List must be of same size as matrix"};
 	std::copy(list.begin(), list.end(), buf_);
 }
 
@@ -76,14 +72,10 @@ uint matrix::n() const {
 }
 
 double matrix::get(uint i, uint j) const {
-	if (i >= m_ || j >= n_)
-		throw std::out_of_range("Term isn't within matrix");
 	return buf_[index(i, j)];
 }
 
 void matrix::set(uint i, uint j, double value) {
-	if (i >= m_ || j >= n_)
-		throw std::out_of_range("Term isn't within matrix");
 	buf_[index(i, j)] = value;
 }
 
@@ -140,22 +132,16 @@ matrix matrix::get_col(uint j) const {
 }
 
 void matrix::set_row(uint i, const matrix& row) {
-	if (row.m_ != 1 || row.n_ != n_)
-		throw bad_size();
 	for (int j = 0; j < n_; j++)
 		(*this)(i, j) = row(0, j);
 }
 
 void matrix::set_col(uint j, const matrix& col) {
-	if (col.n_ != 1 || col.m_ != m_)
-		throw bad_size();
 	for (uint i = 0; i < m_; i++)
 		(*this)(i, j) = col(i, 0);
 }
 
 double matrix::trace() const {
-	if (!is_square())
-		throw not_square();
 	double trace = 0;
 	for (int i = 0; i < m_; i++)
 		trace += (*this)(i, i);
@@ -163,10 +149,6 @@ double matrix::trace() const {
 }
 
 double matrix::det() const {
-	if (!is_square())
-		throw not_square();
-	if (m_ < 2)
-		throw bad_size();
 	if (m_ == 2) // Might as well speed things up
 		return ((*this)(0, 0) * (*this)(1, 1)) - ((*this)(0, 1) * (*this)(1, 0));
 
@@ -216,10 +198,6 @@ matrix matrix::submatrix(uint i, uint j) const {
 }
 
 double matrix::minordet(uint i, uint j) const {
-	if (!is_square())
-		throw not_square();
-	if (m_ < 3)
-		throw bad_size();
 	return submatrix(i, j).det();
 }
 
@@ -229,8 +207,6 @@ double matrix::cofactor(uint i, uint j) const {
 }
 
 matrix matrix::minor_matrix() const {
-	if (!is_square())
-		throw not_square();
 	matrix mat(m_, m_);
 	for (uint i = 0; i < m_; i++)
 	for (uint j = 0; j < m_; j++)
@@ -249,11 +225,7 @@ matrix matrix::cofactor_matrix() const {
 }
 
 matrix matrix::invert() const {
-	if (!is_square())
-		throw not_square();
 	double deter = det();
-	if (deter == 0)
-		throw not_invertible();
 	matrix mat;
 	if (m_ == 2) {
 		mat = matrix(2, 2);
@@ -269,13 +241,7 @@ matrix matrix::invert() const {
 
 // Reimplement?
 matrix matrix::solve(const matrix& ans) const {
-	if (!is_square())
-		throw not_square();
-	if (ans.m_ != m_ || ans.n_ != 1)
-		throw bad_size();
 	double deter = det();
-	if (deter == 0)
-		throw not_solvable();
 	matrix res(m_, 1);
 	matrix mat;
 	for (uint j = 0; j < n_; j++) {
@@ -293,14 +259,10 @@ void matrix::swap(matrix& other) {
 }
 
 double& matrix::operator()(uint i, uint j) {
-	if (i >= m_ || j >= n_)
-		throw std::out_of_range("Term isn't within matrix");
 	return buf_[index(i, j)];
 }
 
 double matrix::operator()(uint i, uint j) const {
-	if (i >= m_ || j >= n_)
-		throw std::out_of_range("Term isn't within matrix");
 	return buf_[index(i, j)];
 }
 
@@ -322,13 +284,11 @@ matrix matrix::operator-() {
 }
 
 matrix& matrix::operator+=(const matrix& a) {
-	check_size(a);
 	for_ij(m_, n_) buf_[index(i, j)] += a.buf_[index(i, j)];
 	return *this;
 }
 
 matrix& matrix::operator-=(const matrix& a) {
-	check_size(a);
 	for_ij(m_, n_) buf_[index(i, j)] -= a.buf_[index(i, j)];
 	return *this;
 }
@@ -422,8 +382,6 @@ namespace simple_matrix {
 	}
 
 	matrix operator*(const matrix& a, const matrix& b) {
-		if (a.n() != b.m())
-			throw bad_size();
 		matrix mat(a.m(), b.n());
 		for (uint i = 0; i < a.m(); i++)
 		for (uint j = 0; j < b.n(); j++) {
