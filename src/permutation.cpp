@@ -8,7 +8,7 @@ The algorithm is slightly modified to use zero indexing instead, so that
 permutations as indexes for the matrix.
 */
 
-#include "matrix.hpp"
+#include "matrix.h"
 #define SWAP(a, b) tmp=(a); (a)=(b); (b)=tmp
 
 namespace simple_matrix {

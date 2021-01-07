@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "matrix.hpp"
+#include "matrix.h"
 
 using namespace std;
 using namespace simple_matrix;

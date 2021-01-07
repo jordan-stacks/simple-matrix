@@ -3,9 +3,17 @@ CC=g++
 BIN=./bin
 SRC=./src
 
-CFLAGS=-O2 -I$(SRC) -g
+CFLAGS=-I$(SRC) \
+		-m32 \
+		-O0 \
+		-fprofile-arcs \
+		-ftest-coverage \
+		-ggdb3 \
+		-std=c++11 \
+		-Werror \
+		-fopenmp
 
-DEPS=$(SRC)/matrix.hpp
+DEPS=$(SRC)/matrix.h
 
 OBJ=matrix.o permutation.o prettyprint.o
 LIBRARY=libsimplematrix.a

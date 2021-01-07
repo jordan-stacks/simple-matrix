@@ -5,7 +5,7 @@
 #include <exception>
 #include <stdexcept>
 
-#include "matrix.hpp"
+#include "matrix.h"
 
 using namespace simple_matrix;
 
